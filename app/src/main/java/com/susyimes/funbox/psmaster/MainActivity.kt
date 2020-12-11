@@ -26,9 +26,31 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        refresh.setOnClickListener {
+            resultBitmap=null
+            bgImage.setImageBitmap(null)
+            resultImage.setImageBitmap(null)
+            bgBitmap = null
+            drawView.clear()
+        }
         save.setOnClickListener {
-            if (resultBitmap != null)
-                SaveUtils().saveBitmap(this, resultBitmap, System.currentTimeMillis().toString())
+
+            if (resultBitmap != null) {
+                if (bgBitmap == null) {
+                    SaveUtils().saveBitmap(
+                        this,
+                        resultBitmap,
+                        System.currentTimeMillis().toString()
+                    )
+                } else {
+                    resultBitmap = cropMaskOnImage(bgBitmap!!, resultBitmap)
+                    SaveUtils().saveBitmap(
+                        this,
+                        resultBitmap,
+                        System.currentTimeMillis().toString()
+                    )
+                }
+            }
         }
         cut.setOnClickListener {
             if (bgBitmap != null) {
@@ -36,6 +58,7 @@ class MainActivity : AppCompatActivity() {
                 Glide.with(this).load(resultBitmap)
                     .into(resultImage)
                 bgImage.setImageBitmap(null)
+                bgBitmap = null
                 drawView.clear()
             } else {
                 Toast.makeText(this, "oppssss,你还没有放置背景图", Toast.LENGTH_SHORT).show()
@@ -52,10 +75,12 @@ class MainActivity : AppCompatActivity() {
                     override fun onResult(result: MutableList<LocalMedia>?) {
                         Log.e("pssssss", Uri.parse(result?.get(0)?.path.toString()).toString())
 
-                        Glide.with(this@MainActivity).asBitmap().load(MediaStore.Images.Media.getBitmap(
-                            contentResolver,
-                            Uri.parse(result?.get(0)?.path.toString())
-                        )).centerCrop()
+                        Glide.with(this@MainActivity).asBitmap().load(
+                            MediaStore.Images.Media.getBitmap(
+                                contentResolver,
+                                Uri.parse(result?.get(0)?.path.toString())
+                            )
+                        ).centerCrop()
                             .listener(object : RequestListener<Bitmap> {
                                 override fun onLoadFailed(
                                     e: GlideException?,
@@ -125,9 +150,9 @@ class MainActivity : AppCompatActivity() {
         val canvas = Canvas(styled)
         val paint =
             Paint(Paint.ANTI_ALIAS_FLAG)
+        canvas.drawBitmap(original, 0f, 0f, paint)
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)
-        canvas.drawBitmap(original, 0f, 0f, null)
-        canvas.drawBitmap(mask, original.width/2f, original.height/2f, paint)
+        canvas.drawBitmap(mask, 0f, 0f, paint)
         paint.xfermode = null
         return styled
     }

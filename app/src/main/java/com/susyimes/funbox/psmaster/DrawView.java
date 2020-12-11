@@ -5,6 +5,7 @@ package com.susyimes.funbox.psmaster;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -32,11 +33,12 @@ public class DrawView extends View {
 
     private int color;
     private int width = 8;
+    private Canvas canvas;
 
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
         //初始化画笔
-        color = getResources().getColor(R.color.picture_color_fa632d);
+        color = getResources().getColor(R.color.purple_500);
         paint = new Paint();
         paint.setStrokeWidth(width);
         paint.setAntiAlias(true);
@@ -48,6 +50,7 @@ public class DrawView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        this.canvas = canvas;
 
         /**
          * 循环绘制集合里面的路径
@@ -124,6 +127,14 @@ public class DrawView extends View {
 
 
     public Bitmap viewGetImage() {
+        for (int i = 0; i < paths.size(); i++) {
+            PathModel p = paths.get(i);
+            //每次绘制路径都需要设置画笔的宽度，颜色
+            paint.setStrokeWidth(p.getWidth());
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(p.getColor());
+            canvas.drawPath(p.getPath(), paint);
+        }
         this.setDrawingCacheEnabled(true);
         this.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         //this.setDrawingCacheBackgroundColor(Color.TRANSPARENT);
