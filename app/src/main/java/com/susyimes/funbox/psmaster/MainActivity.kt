@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
             resultBitmap=null
             bgImage.setImageBitmap(null)
             resultImage.setImageBitmap(null)
+            drawView.resetPaint()
             bgBitmap = null
             drawView.clear()
         }

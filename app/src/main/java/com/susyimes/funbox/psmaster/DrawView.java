@@ -158,4 +158,7 @@ public class DrawView extends View {
         return bmp;
     }
 
+    public void resetPaint() {
+        paint.setStyle(Paint.Style.STROKE);
+    }
 }
