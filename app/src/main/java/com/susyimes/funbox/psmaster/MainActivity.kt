@@ -64,10 +64,14 @@ class MainActivity : AppCompatActivity() {
 
         cut.setOnClickListener {
             if (bgBitmap != null) {
-                if (reverseCut) {
-                    resultBitmap = cropBitmapWithOutMask(bgBitmap!!, drawView.viewGetImage())
-                } else {
-                    resultBitmap = cropBitmapWithMask(bgBitmap!!, drawView.viewGetImage())
+                resultBitmap = if (drawView.paths.isNullOrEmpty()){
+                    bgBitmap
+                }else {
+                    if (reverseCut) {
+                        cropBitmapWithOutMask(bgBitmap!!, drawView.viewGetImage())
+                    } else {
+                        cropBitmapWithMask(bgBitmap!!, drawView.viewGetImage())
+                    }
                 }
                 Glide.with(this).load(resultBitmap)
                     .into(resultImage)
@@ -86,10 +90,9 @@ class MainActivity : AppCompatActivity() {
         add.setOnClickListener {
             PictureSelector.create(this)
                 .openGallery(PictureMimeType.ofImage())
-                .loadImageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
+                .imageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
                 .forResult(object : OnResultCallbackListener<LocalMedia> {
                     override fun onResult(result: MutableList<LocalMedia>?) {
-                        Log.e("pssssss", Uri.parse(result?.get(0)?.path.toString()).toString())
 
                         Glide.with(this@MainActivity).asBitmap().load(
                             MediaStore.Images.Media.getBitmap(
