@@ -1,14 +1,17 @@
 package com.susyimes.funbox.psmaster
 
+import android.app.Activity
+import android.content.Context
+import android.content.res.Resources
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.provider.MediaStore
+import android.util.DisplayMetrics
 import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -19,6 +22,8 @@ import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.listener.OnResultCallbackListener
 import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.Exception
+
 
 class MainActivity : AppCompatActivity() {
     private var bgBitmap: Bitmap? = null
@@ -27,12 +32,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         refresh.setOnClickListener {
-            resultBitmap=null
-            bgImage.setImageBitmap(null)
-            resultImage.setImageBitmap(null)
-            drawView.resetPaint()
-            bgBitmap = null
+
             drawView.clear()
+            drawView.resetPaint()
+
+            resultBitmap = null
+
+            bgImage.setImageBitmap(null)
+            Glide.with(this).clear(resultImage)
+            //resultImage.setImageBitmap(null)
+
+            bgBitmap = null
+
         }
         save.setOnClickListener {
 
@@ -44,7 +55,12 @@ class MainActivity : AppCompatActivity() {
                         System.currentTimeMillis().toString()
                     )
                 } else {
-                    resultBitmap = cropMaskOnImage(bgBitmap!!, resultBitmap)
+                    root.isDrawingCacheEnabled = true
+                    resultBitmap = root.drawingCache
+//                    val ret: Bitmap =
+//                        Bitmap.createBitmap(resultBitmap, 0, startX, width, height)
+                    //screenShot(this@MainActivity)
+                    //cropMaskOnImage(bgBitmap!!, resultBitmap)
                     SaveUtils().saveBitmap(
                         this,
                         resultBitmap,
@@ -157,4 +173,6 @@ class MainActivity : AppCompatActivity() {
         paint.xfermode = null
         return styled
     }
+
+
 }

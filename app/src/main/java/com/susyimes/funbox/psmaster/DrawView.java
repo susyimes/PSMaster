@@ -1,12 +1,9 @@
 package com.susyimes.funbox.psmaster;
 
 
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
@@ -159,6 +156,9 @@ public class DrawView extends View {
     }
 
     public void resetPaint() {
+        paint.setStrokeWidth(width);
+        paint.setColor(color);
         paint.setStyle(Paint.Style.STROKE);
+
     }
 }
