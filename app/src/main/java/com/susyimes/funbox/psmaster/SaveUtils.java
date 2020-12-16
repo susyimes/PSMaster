@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -116,7 +118,7 @@ public class SaveUtils {
                 //使用流将内容写入该uri中即可
                 OutputStream outputStream = context.getContentResolver().openOutputStream(uri);
                 if (outputStream != null) {
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
                     outputStream.flush();
                     outputStream.close();
                 }
